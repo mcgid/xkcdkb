@@ -60,8 +60,10 @@ def main():
 
         real_size = system_size(filename)
 
-        for sizer in _SIZERS:
-            print(sizer.size(real_size))
+        for sizer in sizers:
+            sizer_size = math.ceil(real_size/sizer.ratio)
+
+            print(sizer.format_string.format(size=sizer_size))
 
 # ---
 # Lifecycle
@@ -90,6 +92,8 @@ def init_sizers():
 
     for sizer in sizers:
         sizer.build_format_string(max_name_len)
+
+    return sizers
 
 
 # ---
