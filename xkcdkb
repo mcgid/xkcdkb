@@ -51,6 +51,24 @@ def system_size(filename):
 
     return statinfo.st_size
 
+def kilobyte(system_size):
+    pass
+
+def kelly_bootle(system_size):
+    pass
+
+def imaginary(system_size):
+    pass
+
+def intel(system_size):
+    pass
+
+def drivemaker(system_size):
+    pass
+
+def baker(system_size):
+    pass
+
 # ---
 # Run
 
