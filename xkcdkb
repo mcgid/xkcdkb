@@ -10,6 +10,7 @@ at the following URI:
 from __future__ import division
 
 import os
+import sys
 import argparse
 import math
 import calendar
@@ -55,13 +56,13 @@ def main():
 
     sizers = init_sizers()
 
+    real_sizes = system_sizes(filenames)
+
     for filename in filenames:
         print("{}:".format(filename))
 
-        real_size = system_size(filename)
-
         for sizer in sizers:
-            sizer_size = math.ceil(real_size/sizer.ratio)
+            sizer_size = math.ceil(real_sizes[filename]/sizer.ratio)
 
             print(sizer.format_string.format(size=sizer_size))
 
@@ -103,6 +104,18 @@ def system_size(filename):
     statinfo = os.stat(filename)
 
     return statinfo.st_size
+
+def system_sizes(filenames):
+    sizes = {}
+
+    for filename in filenames:
+        try:
+            sizes[filename] = system_size(filename)
+        except OSError as e:
+            print "ERROR: {}".format(e)
+            sys.exit(1)
+
+    return sizes
 
 # ---
 # Sizing functions
