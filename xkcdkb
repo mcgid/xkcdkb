@@ -1,0 +1,58 @@
+#!/usr/bin/env python
+"""XKCD file size
+
+This program displays the sizes of the specified files in the manner described
+at the following URI:
+
+    http://xkcd.com/394/
+"""
+
+import os
+import argparse
+
+
+def main():
+    files = []
+
+    filenames = init()
+
+    for filename in filenames:
+        files.append((filename, sizes(filename)))
+
+    output(files)
+
+# ---
+# Lifecycle
+
+def init():
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('filenames', nargs='+', help="the files to inspect")
+
+    args = parser.parse_args()
+
+    return args.filenames
+
+# ---
+# Main functions
+
+def sizes(filename):
+    pass
+
+
+def output(files):
+    pass
+
+# ---
+# Sizing functions
+
+def system_size(filename):
+    statinfo = os.stat(filename)
+
+    return statinfo.st_size
+
+# ---
+# Run
+
+main()
+
