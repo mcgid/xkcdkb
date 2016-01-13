@@ -15,6 +15,7 @@ import argparse
 import math
 import calendar
 import datetime
+import locale
 
 
 # ---
@@ -51,7 +52,9 @@ class Sizer:
     def get_size(self, real_size):
         size = math.ceil(real_size/self.ratio)
 
-        return self.format_string.format(size = size)
+        size_str = locale.format("%d",size, grouping=True)
+
+        return self.format_string.format(size = size_str)
 
 
 # ---
@@ -74,6 +77,10 @@ def main():
 # Lifecycle
 
 def init():
+    # Set locale to user default locale, for supporting number separators
+    locale.setlocale(locale.LC_ALL, '')
+
+    # Process arguments
     parser = argparse.ArgumentParser()
 
     parser.add_argument('filenames', nargs='+', metavar='file', help="the files to inspect")
