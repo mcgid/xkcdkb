@@ -7,19 +7,61 @@ at the following URI:
     http://xkcd.com/394/
 """
 
+from __future__ import division
+
 import os
 import argparse
+import math
+import calendar
+import datetime
 
+
+# ---
+# Classes
+
+class Sizer:
+    def __init__(self, name, suffix, unit, ratio):
+        self.name = name
+        self.suffix = suffix
+        self.unit = unit
+        self.ratio = ratio
+
+    def build_format_string(self, name_width):
+        indent_part = "    "
+
+        name_part = "{name:{width}}: ".format(
+            name = self.name,
+            width = name_width
+        )
+
+        if self.suffix is not None:
+            size_part = "{{size}}{suffix} {unit}".format(
+                suffix = self.suffix,
+                unit = self.unit
+            )
+        else:
+            size_part = "{{size}} {unit}".format(
+                unit = self.unit
+            )
+
+        self.format_string = indent_part + name_part + size_part
+
+
+# ---
+# Main code path
 
 def main():
-    files = []
-
     filenames = init()
 
-    for filename in filenames:
-        files.append((filename, sizes(filename)))
+    sizers = init_sizers()
 
-    output(files)
+    for filename in filenames:
+        print("{}:".format(filename))
+
+        real_size = system_size(filename)
+
+        for sizer in _SIZERS:
+            print(sizer.size(real_size))
 
 # ---
 # Lifecycle
@@ -33,42 +75,53 @@ def init():
 
     return args.filenames
 
+
+def init_sizers():
+    sizers = []
+
+    sizers.append(Sizer("KILOBYTE", None, "kB", _kilobyte_ratio()))
+    sizers.append(Sizer("KELLY-BOOTLE STANDARD UNIT", None, "KB", 1012))
+    sizers.append(Sizer("IMAGINARY KILOBYTE", "i", "KiB", 1024))
+    sizers.append(Sizer("INTEL KILOBYTE", None, "kb", 1023.937528))
+    sizers.append(Sizer("DRIVEMAKER'S KILOBYTE", None, "Kb", _drivemaker_ratio()))
+    sizers.append(Sizer("BAKER'S KILOBYTE", None, "KBa", 1152))
+
+    max_name_len = max([len(e.name) for e in sizers])
+
+    for sizer in sizers:
+        sizer.build_format_string(max_name_len)
+
+
 # ---
-# Main functions
-
-def sizes(filename):
-    pass
-
-
-def output(files):
-    pass
-
-# ---
-# Sizing functions
+# Utility functions
 
 def system_size(filename):
     statinfo = os.stat(filename)
 
     return statinfo.st_size
 
-def kilobyte(system_size):
-    pass
+# ---
+# Sizing functions
 
-def kelly_bootle(system_size):
-    pass
+def _kilobyte_ratio():
+    now = datetime.datetime.now()
 
-def imaginary(system_size):
-    pass
+    if (calendar.isleap(now.year)):
+        return 1000
+    else:
+        return 1024
 
-def intel(system_size):
-    pass
 
-def drivemaker(system_size):
-    pass
+def _drivemaker_ratio():
+    # Was 908 bytes on March 10, 2008
+    reference_value = 908
 
-def baker(system_size):
-    pass
+    now = datetime.datetime.now()
 
+    bytes_change = 4 * (now.year - 2008)
+
+    return reference_value - bytes_change
+    
 # ---
 # Run
 
