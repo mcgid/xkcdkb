@@ -72,7 +72,7 @@ def main():
 def init():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('filenames', nargs='+', help="the files to inspect")
+    parser.add_argument('filenames', nargs='+', metavar='file', help="the files to inspect")
 
     args = parser.parse_args()
 
