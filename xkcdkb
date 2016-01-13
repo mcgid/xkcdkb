@@ -47,6 +47,11 @@ class Sizer:
 
         self.format_string = indent_part + name_part + size_part
 
+    def get_size(self, real_size):
+        size = math.ceil(real_size/self.ratio)
+
+        return self.format_string.format(size = size)
+
 
 # ---
 # Main code path
@@ -62,9 +67,7 @@ def main():
         print("{}:".format(filename))
 
         for sizer in sizers:
-            sizer_size = math.ceil(real_sizes[filename]/sizer.ratio)
-
-            print(sizer.format_string.format(size=sizer_size))
+            print(sizer.get_size(real_sizes[filename]))
 
 # ---
 # Lifecycle
