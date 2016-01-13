@@ -28,24 +28,25 @@ class Sizer:
         self.ratio = ratio
 
     def build_format_string(self, name_width):
-        indent_part = "    "
+        indent = "    "
 
-        name_part = "{name:{width}}: ".format(
+        name = "{name:>{width}}".format(
             name = self.name,
             width = name_width
         )
 
-        if self.suffix is not None:
-            size_part = "{{size}}{suffix} {unit}".format(
-                suffix = self.suffix,
-                unit = self.unit
-            )
-        else:
-            size_part = "{{size}} {unit}".format(
-                unit = self.unit
-            )
+        size = "{size}"
 
-        self.format_string = indent_part + name_part + size_part
+        if self.suffix is None:
+            suffix = ""
+        else:
+            suffix = self.suffix
+
+        unit = self.unit
+
+        format_str = "{}{}: {}{} {}".format(indent, name, size, suffix, unit)
+
+        self.format_string = format_str
 
     def get_size(self, real_size):
         size = math.ceil(real_size/self.ratio)
